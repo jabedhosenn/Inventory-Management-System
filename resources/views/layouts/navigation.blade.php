@@ -21,6 +21,18 @@
                     <x-nav-link :href="route('admin.viewcategory')" :active="request()->routeIs('admin.viewcategory')">
                         {{ __('View Category') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.addsupplier')" :active="request()->routeIs('admin.addsupplier')">
+                        {{ __('Add Supplier') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.viewsupplier')" :active="request()->routeIs('admin.viewsupplier')">
+                        {{ __('View Supplier') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.addproduct')" :active="request()->routeIs('admin.addproduct')">
+                        {{ __('Add Product') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.viewproduct')" :active="request()->routeIs('admin.viewproduct')">
+                        {{ __('View Product') }}
+                    </x-nav-link>
                 </div>
             </div>
 

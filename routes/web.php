@@ -18,6 +18,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/editcategory/{id}', [AdminController::class, 'editCategory'])->name('admin.editcategory');
     Route::post('/editcategory/{id}', [AdminController::class, 'updateCategory'])->name('admin.updatecategory');
     Route::delete('/deletecategory/{id}', [AdminController::class, 'deleteCategory'])->name('admin.deletecategory');
+    Route::get('/addsupplier', [AdminController::class, 'addSupplier'])->name('admin.addsupplier');
+    Route::post('/addsupplier', [AdminController::class, 'createSupplier'])->name('admin.createsupplier');
+    Route::get('/viewsupplier', [AdminController::class, 'viewSupplier'])->name('admin.viewsupplier');
+    Route::get('/editsupplier/{id}', [AdminController::class, 'editSupplier'])->name('admin.editsupplier');
+    Route::post('/editsupplier/{id}', [AdminController::class, 'updateSupplier'])->name('admin.updatesupplier');
+    Route::delete('/deletesupplier/{id}', [AdminController::class, 'deleteSupplier'])->name('admin.deletesupplier');
+    Route::get('/addproduct', [AdminController::class, 'addProduct'])->name('admin.addproduct');
+    Route::post('/addproduct', [AdminController::class, 'createProduct'])->name('admin.createproduct');
+    Route::get('/viewproduct', [AdminController::class, 'viewProduct'])->name('admin.viewproduct');
+    Route::get('/editproduct/{id}', [AdminController::class, 'editProduct'])->name('admin.editproduct');
+    Route::post('/editproduct/{id}', [AdminController::class, 'updateProduct'])->name('admin.updateproduct');
+    Route::delete('/deleteproduct/{id}', [AdminController::class, 'deleteProduct'])->name('admin.deleteproduct');
 });
 
 Route::middleware('auth')->group(function () {
