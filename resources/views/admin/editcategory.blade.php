@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Category') }}
+            {{ __('Update Category') }}
         </h2>
     </x-slot>
 
@@ -18,40 +18,31 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('admin.createaddcategory') }}" method="POST"
-                        class="row g-3 align-items-end mt-2">
+                    {{-- Update Form --}}
+                    <form action="{{ route('admin.updatecategory', $category->id) }}" method="POST" class="row g-3 align-items-end mt-2">
                         @csrf
 
-                        {{-- Category Name Input --}}
                         <div class="col-md-6">
                             <label for="name" class="form-label fw-semibold">{{ __('Category Name') }}</label>
-                            <input type="text" name="name" id="name"
-                                class="form-control form-control-lg rounded-3" placeholder="Enter category name"
-                                required>
+                            <input type="text" name="name" id="name" class="form-control form-control-lg rounded-3"
+                                   placeholder="Enter category name" value="{{ $category->category_name }}" required>
                         </div>
 
-                        {{-- Add Category Button --}}
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-success btn-lg w-100 rounded-3 shadow-sm">
-                                <i class="bi bi-plus-circle me-1"></i> {{ __('Add Category') }}
+                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm">
+                                <i class="bi bi-pencil-square me-1"></i> {{ __('Update Category') }}
                             </button>
                         </div>
 
-                        {{-- View Categories Button --}}
                         <div class="col-md-3">
-                            <a href="{{ route('admin.viewcategory') }}"
-                                class="btn btn-primary btn-lg w-100 rounded-3 shadow-sm">
+                            <a href="{{ route('admin.viewcategory') }}" class="btn btn-secondary btn-lg w-100 rounded-3 shadow-sm">
                                 <i class="bi bi-eye me-1"></i> {{ __('View Categories') }}
                             </a>
                         </div>
                     </form>
+
                 </div>
             </div>
-
         </div>
     </div>
 </x-app-layout>
-
-
-{{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> --}}

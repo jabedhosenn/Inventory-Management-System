@@ -26,4 +26,27 @@ class AdminController extends Controller
         $categories = Category::all();
         return view('admin.viewcategory', compact('categories'));
     }
+
+    public function editCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        return view('admin.editcategory', compact('category'));
+    }
+
+    public function updateCategory(Request $request, $id)
+    {
+       $category = Category::findOrFail($id);
+    $category->category_name = $request->name;
+    $category->save();
+
+    return redirect()->back()->with('success', 'Category updated successfully!');
+    }
+
+    public function deleteCategory($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return redirect()->route('admin.viewcategory')->with('success', 'Category deleted successfully.');
+    }
 }

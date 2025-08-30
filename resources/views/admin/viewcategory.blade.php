@@ -9,7 +9,13 @@
         <div class="container">
             <div class="card shadow-sm">
                 <div class="card-body">
-
+                    {{-- Success Message --}}
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                     {{-- Category Table --}}
                     <table class="table">
                         <thead>
@@ -24,24 +30,36 @@
                                 <tr>
                                     <td>{{ $category->id }}</td>
                                     <td>{{ $category->category_name }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <button class="btn btn-primary btn-sm">{{ __('Update') }}</button>
                                         <button class="btn btn-danger btn-sm">{{ __('Delete') }}</button>
-                                    </td>
-                                    {{-- <td>
-                                        <form action="{{ route('admin.deletecategory', $category->id) }}" method="POST">
+                                    </td> --}}
+                                    <td>
+                                        <a href="{{ route('admin.editcategory', $category->id) }}"
+                                            class="btn btn-primary btn-sm">{{ __('Update') }}</a>
+
+                                        <form action="{{ route('admin.deletecategory', $category->id) }}"
+                                            method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="submit"
+                                                onclick="return confirm('Are you sure you want to delete this category?');"
+                                                class="btn btn-danger btn-sm">
                                                 {{ __('Delete') }}
                                             </button>
                                         </form>
-                                    </td> --}}
+                                    </td>
                                 </tr>
                             @endforeach
 
                         </tbody>
                     </table>
+
+                    <div>
+                        <a href="{{ route('admin.addcategory') }}" class="btn btn-success">
+                            {{ __('Add Category') }}
+                        </a>
+                    </div>
 
                 </div>
             </div>
