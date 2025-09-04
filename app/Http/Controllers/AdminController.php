@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Supplier;
-use App\Models\Product;
+use App\Models\Products;
 
 class AdminController extends Controller
 {
@@ -103,49 +103,80 @@ class AdminController extends Controller
 
     public function addProduct()
     {
-        return view('admin.addproduct');
+        $categories = Category::all();
+        $suppliers = Supplier::all();
+        return view('admin.addproduct', compact('categories', 'suppliers'));
     }
 
     public function createProduct(Request $request)
     {
-        $product = new Product();
+
+        $product = new Products();
+        if ($request->hasFile('product_image')) {
+            $image = $request->file('product_image');
+            $image_name = time() . '.' . $image->getClientOriginalExtension();
+            $product->product_image = $image_name;
+        }
         $product->product_name = $request->product_name;
         $product->product_description = $request->product_description;
         $product->product_price = $request->product_price;
+        $product->product_quantity = $request->product_quantity;
+        $product->category_name = $request->category_name;
+        $product->supplier_name = $request->supplier_name;
         $product->save();
+
+        if ($request->hasFile('product_image') && $product->save()) {
+            $request->product_image->move('images/products', $image_name);
+        }
 
         return redirect()->route('admin.addproduct')->with('success', 'Product added successfully.');
     }
 
     public function viewProduct()
     {
-        $products = Product::all();
+        $categories = Category::all();
+        $suppliers = Supplier::all();
+        $products = Products::all();
         return view('admin.viewproduct', compact('products'));
     }
 
     public function editProduct($id)
     {
-        $product = Product::findOrFail($id);
-        return view('admin.editproduct', compact('product'));
+        $categories = Category::all();
+        $suppliers = Supplier::all();
+        $product = Products::findOrFail($id);
+        return view('admin.editproduct', compact('product', 'categories', 'suppliers'));
     }
 
     public function updateProduct(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+
+        $product = Products::findOrFail($id);
+        if ($request->hasFile('product_image')) {
+            $image = $request->file('product_image');
+            $image_name = time() . '.' . $image->getClientOriginalExtension();
+            $product->product_image = $image_name;
+        }
         $product->product_name = $request->product_name;
         $product->product_description = $request->product_description;
         $product->product_price = $request->product_price;
+        $product->product_quantity = $request->product_quantity;
+        $product->category_name = $request->category_name;
+        $product->supplier_name = $request->supplier_name;
         $product->save();
+
+        if ($request->hasFile('product_image') && $product->save()) {
+            $request->product_image->move('images/products', $image_name);
+        }
 
         return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
     public function deleteProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         $product->delete();
 
         return redirect()->route('admin.viewproduct')->with('success', 'Product deleted successfully.');
     }
-
 }
