@@ -20,10 +20,10 @@ It provides **role-based access (Admin/User)**, product & category management, s
 
 ## 🧱 Tech Stack
 
-- **Backend:** PHP 8.2+, Laravel 11  
+- **Backend:** PHP 8.2+, Laravel 12 
 - **Auth:** Laravel Breeze (Blade)  
 - **Database:** MySQL 8+  
-- **Frontend:** Blade, Bootstrap 5, Vanilla JS  
+- **Frontend:** Blade, Bootstrap 5 
 
 ---
 
