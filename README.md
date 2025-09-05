@@ -1,4 +1,4 @@
-# 📦 Inventory Management System (Laravel)
+# 📦 Inventory Management System (Laravel) Backend
 
 An **Inventory Management System** built with **Laravel 11, Laravel Breeze, Blade, MySQL, and Bootstrap**.  
 It provides **role-based access (Admin/User)**, product & category management, suppliers, orders (create/remove), and a clean dashboard separation via custom middleware.  
@@ -42,7 +42,7 @@ Make sure you have the following installed:
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/yourusername/inventory-management.git
+   git clone https://github.comjabedhosenn/Inventory-Management-System-Backend.git
    cd inventory-management
    ```
 
@@ -83,8 +83,8 @@ Make sure you have the following installed:
 
 Seeder creates an admin account:  
 
-- **Email:** `admin@example.com`  
-- **Password:** `password`  
+- **Email:** `admin@gmail.com`  
+- **Password:** `11111111`  
 
 ---
 
