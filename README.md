@@ -1,6 +1,6 @@
 # 📦 Inventory Management System (Laravel) Backend
 
-An **Inventory Management System** built with **Laravel 11, Laravel Breeze, Blade, MySQL, and Bootstrap**.  
+An **Inventory Management System** built with **Laravel 12, Laravel Breeze, Blade, MySQL, and Bootstrap**.  
 It provides **role-based access (Admin/User)**, product & category management, suppliers, orders (create/remove), and a clean dashboard separation via custom middleware.  
 
 ---
