@@ -1,41 +1,104 @@
-Inventory Management System (Backend)
+# 📦 Inventory Management System (Laravel)
 
-An Inventory Management System built with PHP, Laravel, Laravel Breeze, Blade, MySQL, HTML, CSS, JavaScript, and Bootstrap. It supports role‑based access (Admin/User), product & category management, suppliers, orders (create/remove), and a clean dashboard separation via custom middleware.
+An **Inventory Management System** built with **Laravel 11, Laravel Breeze, Blade, MySQL, and Bootstrap**.  
+It provides **role-based access (Admin/User)**, product & category management, suppliers, orders (create/remove), and a clean dashboard separation via custom middleware.  
 
-✨ Features
+---
 
-Authentication with Laravel Breeze (login, registration, password reset)
+## ✨ Features
 
-Role-based dashboards: Admin vs User
+- 🔑 **Authentication** with Laravel Breeze (login, registration, password reset)  
+- 👥 **Role-based dashboards**: Admin vs User  
+- 🛡 **Custom middleware** to protect admin routes  
+- 📦 **Products & Categories CRUD**  
+- 🏢 **Suppliers & product–supplier relations**  
+- 📝 **Orders**: create orders, add/remove items, soft delete/cancel orders  
+- 📱 **Responsive UI** with Bootstrap 5 (coexists with Breeze defaults)  
+- 🌱 **Database seeding** for roles, admin user, and sample data  
 
-Custom middleware to protect admin routes
+---
 
-Products & Categories CRUD
+## 🧱 Tech Stack
 
-Suppliers and product–supplier relations
+- **Backend:** PHP 8.2+, Laravel 11  
+- **Auth:** Laravel Breeze (Blade)  
+- **Database:** MySQL 8+  
+- **Frontend:** Blade, Bootstrap 5, Vanilla JS  
 
-Orders: create orders, add/remove items, soft delete/cancel orders
+---
 
-Responsive UI with Bootstrap 5 (coexists with Breeze defaults)
+## 🔧 Prerequisites
 
-Database seeding for roles, admin user, sample data
+Make sure you have the following installed:
 
-🧱 Tech Stack
+- [PHP 8.2+](https://www.php.net/downloads)  
+- [Composer](https://getcomposer.org/)  
+- [MySQL 8+](https://dev.mysql.com/downloads/)  
+- [Node.js 18+ & NPM](https://nodejs.org/)  
 
-Backend: PHP 8.2+, Laravel 11
+---
 
-Auth: Laravel Breeze (Blade)
+## 🚀 Installation & Setup
 
-DB: MySQL 8+
+1. **Clone the repository**  
+   ```bash
+   git clone https://github.com/yourusername/inventory-management.git
+   cd inventory-management
+   ```
 
-Frontend: Blade, Bootstrap 5, vanilla JS
+2. **Install dependencies**  
+   ```bash
+   composer install
+   npm install
+   ```
 
-🔧 Prerequisites
+3. **Environment setup**  
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-PHP 8.2+
+   Update `.env` with your **database credentials**.  
 
-Composer
+4. **Run migrations & seeders**  
+   ```bash
+   php artisan migrate --seed
+   ```
 
-MySQL 8+
+5. **Build assets**  
+   ```bash
+   npm run dev
+   ```
 
-Node.js 18+ & NPM (for assets)
+6. **Start local server**  
+   ```bash
+   php artisan serve
+   ```
+
+   Now visit 👉 [http://localhost:8000](http://localhost:8000)  
+
+---
+
+## 👤 Default Admin Access
+
+Seeder creates an admin account:  
+
+- **Email:** `admin@example.com`  
+- **Password:** `password`  
+
+---
+
+## 📂 Project Structure
+
+- `app/Models` → Models (Product, Category, Supplier, Order)  
+- `app/Http/Controllers` → Controllers for resources  
+- `resources/views` → Blade templates (Admin/User dashboards)  
+- `routes/web.php` → Route definitions  
+- `database/seeders` → Role/User/Data seeders  
+
+---
+
+
+## 📜 License
+
+This project is licensed under the **MIT License**.  
