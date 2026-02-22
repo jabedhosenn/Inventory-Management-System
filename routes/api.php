@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
+use App\Http\Controllers\Api\V1\Invoice\InvoiceController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Stock\StockController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,5 +32,15 @@ Route::prefix('v1')->group(function () {
         Route::get('/products/{id}', [ProductController::class, 'show']);
         Route::put('/products/{id}', [ProductController::class, 'update']);
         Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+        // Stock routes
+        Route::get('/stocks', [StockController::class, 'index']);
+        Route::post('/stocks', [StockController::class, 'stockIn']);
+        Route::post('/stocks/adjustment', [StockController::class, 'stockAdjustment']);
+
+        // Invoice routes
+         Route::get('/invoices', [InvoiceController::class, 'index']);
+         Route::post('/invoices', [InvoiceController::class, 'store']);
+         Route::get('/invoices/{id}', [InvoiceController::class, 'show']);
     });
 });

@@ -51,13 +51,13 @@ class ProductController extends Controller
                 'message' => 'Product created successfully',
                 'data' => $product->load('category'),
             ], 201);
-        }catch (ValidationException $e){
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
                 'errors' => $e->errors(),
             ], 422);
-        }catch (Throwable $e){
+        } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while creating product',
@@ -99,23 +99,23 @@ class ProductController extends Controller
             if (! $product) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Product not found',
+                    'message' => 'Product not found!',
                 ], 404);
             }
 
             $validated = $request->validate([
-                'category_id' => ['required', 'integer', 'exists:categories,id'],
-                'product_name' => ['required', 'string', 'max:255'],
-                'sku' => ['sometimes', 'string', 'max:255', 'unique:products,sku,'.$product->id],
-                'unit' => ['required', 'string', 'max:50'],
-                'price' => ['required', 'numeric', 'min:0'],
+                'category_id' => ['sometimes', 'integer', 'exists:categories,id'],
+                'product_name' => ['sometimes', 'string', 'max:255'],
+                'sku' => ['sometimes', 'string', 'max:255', 'unique:products,sku,' . $product->id],
+                'unit' => ['sometimes', 'string', 'max:50'],
+                'price' => ['sometimes', 'numeric', 'min:0'],
                 'stock_qty' => ['nullable', 'integer', 'min:0'],
                 'low_stock_threshold' => ['nullable', 'integer', 'min:0'],
                 'image_path' => ['nullable', 'string', 'max:255'],
                 'color' => ['nullable', 'string', 'max:100'],
                 'size' => ['nullable', 'string', 'max:100'],
                 'weight' => ['nullable', 'numeric', 'min:0'],
-                'status' => ['boolean'],
+                'status' => ['sometimes', 'boolean'],
             ]);
 
             $product->update($validated);
@@ -125,13 +125,13 @@ class ProductController extends Controller
                 'message' => 'Product updated successfully',
                 'data' => $product->load('category'),
             ]);
-        }catch (ValidationException $e){
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
                 'errors' => $e->errors(),
             ], 422);
-        }catch (Throwable $e){
+        } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while updating product',
