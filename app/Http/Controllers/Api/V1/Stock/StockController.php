@@ -117,7 +117,7 @@ class StockController extends Controller
                         'message' => 'Insufficient stock OUT for this adjustment',
                     ], 400);
                 }
-                $product->stock_qty -= abs($validated['quantity']);
+                $product->stock_qty -= $validated['quantity'];
             } else {
                 $product->stock_qty += $validated['quantity'];
             }

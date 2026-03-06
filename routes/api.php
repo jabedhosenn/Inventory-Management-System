@@ -39,8 +39,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/stocks/adjustment', [StockController::class, 'stockAdjustment']);
 
         // Invoice routes
-         Route::get('/invoices', [InvoiceController::class, 'index']);
-         Route::post('/invoices', [InvoiceController::class, 'store']);
-         Route::get('/invoices/{id}', [InvoiceController::class, 'show']);
+        Route::get('/invoices', [InvoiceController::class, 'index']);
+        Route::post('/invoices', [InvoiceController::class, 'store']);
+        Route::get('/invoices/{id}', [InvoiceController::class, 'show']);
+        Route::put('/invoices/{id}', [InvoiceController::class, 'update']);
+        Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy']);
     });
 });
