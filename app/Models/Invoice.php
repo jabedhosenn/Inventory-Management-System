@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'invoice_no',
         'invoice_date',
@@ -24,4 +26,14 @@ class Invoice extends Model
         'discount_amount' => 'decimal:2',
         'grand_total' => 'decimal:2',
     ];
+
+    public function items()
+    {
+        return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 }
