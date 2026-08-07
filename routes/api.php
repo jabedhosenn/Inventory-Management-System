@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
+use App\Http\Controllers\Api\V1\Invoice\InvoiceController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Stock\StockController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,5 +33,14 @@ Route::prefix('v1')->group(function(){
         Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
         Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        // Stock Routes
+        Route::get('/stocks', [StockController::class, 'index'])->name('stock.index');
+        Route::post('/stocks/in', [StockController::class, 'stockIn'])->name('stock.in');
+        Route::post('/stocks/adjustment', [StockController::class, 'stockAdjustment'])->name('stock.adjustment');
+
+        // Invoice Routes
+        Route::get('/invoices', InvoiceController::class . '@index')->name('invoices.index');
+        Route::post('/invoices', InvoiceController::class . '@store')->name('invoices.store');
     });
 });
