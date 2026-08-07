@@ -42,5 +42,8 @@ Route::prefix('v1')->group(function(){
         // Invoice Routes
         Route::get('/invoices', InvoiceController::class . '@index')->name('invoices.index');
         Route::post('/invoices', InvoiceController::class . '@store')->name('invoices.store');
+        Route::get('/invoices/{id}', InvoiceController::class . '@show')->name('invoices.show');
+        Route::put('/invoices/{id}', InvoiceController::class . '@update')->name('invoices.update');
+        Route::delete('/invoices/{id}', InvoiceController::class . '@destroy')->name('invoices.destroy');
     });
 });
