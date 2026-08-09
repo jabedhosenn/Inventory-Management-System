@@ -9,6 +9,6 @@
         <h1 class="h5 mb-0 text-muted">Dashboard</h1>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <span class="text-muted small">Tue, Feb 4, 2026</span>
+        <span class="text-muted small">{{ now()->format('D, M j, Y') }}</span>
     </div>
 </header>
