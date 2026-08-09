@@ -14,11 +14,11 @@ Route::get('/user', function (Request $request) {
 
 
 Route::prefix('v1')->group(function(){
-    Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/register', [AuthController::class, 'register'])->name('api.register');
+    Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 
     Route::middleware('auth:sanctum')->group(function(){
-        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
 
         // Category Routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -35,15 +35,15 @@ Route::prefix('v1')->group(function(){
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
         // Stock Routes
-        Route::get('/stocks', [StockController::class, 'index'])->name('stock.index');
-        Route::post('/stocks/in', [StockController::class, 'stockIn'])->name('stock.in');
-        Route::post('/stocks/adjustment', [StockController::class, 'stockAdjustment'])->name('stock.adjustment');
+        Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
+        Route::post('/stocks', [StockController::class, 'stockIn'])->name('stocks.in');
+        Route::post('/stocks/adjustment', [StockController::class, 'stockAdjustment'])->name('stocks.adjustment');
 
         // Invoice Routes
-        Route::get('/invoices', InvoiceController::class . '@index')->name('invoices.index');
-        Route::post('/invoices', InvoiceController::class . '@store')->name('invoices.store');
-        Route::get('/invoices/{id}', InvoiceController::class . '@show')->name('invoices.show');
-        Route::put('/invoices/{id}', InvoiceController::class . '@update')->name('invoices.update');
-        Route::delete('/invoices/{id}', InvoiceController::class . '@destroy')->name('invoices.destroy');
+        Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+        Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+        Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
+        Route::put('/invoices/{id}', [InvoiceController::class, 'update'])->name('invoices.update');
+        Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
     });
 });
