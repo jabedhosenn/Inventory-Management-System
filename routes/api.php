@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
+use App\Http\Controllers\Api\V1\Dashboard\DashboardController;
 use App\Http\Controllers\Api\V1\Invoice\InvoiceController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Stock\StockController;
@@ -19,6 +20,9 @@ Route::prefix('v1')->group(function(){
 
     Route::middleware('auth:sanctum')->group(function(){
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+
+        // Dashboard Routes
+        Route::get('/dashboard/summary', [DashboardController::class, 'summary'])->name('dashboard.summary');
 
         // Category Routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
