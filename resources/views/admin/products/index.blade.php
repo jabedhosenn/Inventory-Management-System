@@ -13,24 +13,23 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table id="productsTable" class="table table-hover align-middle">
                     <thead class="table-light">
-                    <tr>
-                        <th style="width: 70px;">#</th>
-                        <th>Product</th>
-                        <th style="width: 140px;">SKU</th>
-                        <th style="width: 160px;">Category</th>
-                        <th style="width: 100px;">Unit</th>
-                        <th style="width: 120px;">Price</th>
-                        <th style="width: 110px;">Stock</th>
-                        <th style="width: 110px;">Status</th>
-                        <th style="width: 130px;">Created</th>
-                        <th class="text-end" style="width: 160px;">Actions</th>
-                    </tr>
+                        <tr>
+                            <th style="width: 70px;">#</th>
+                            <th>Product</th>
+                            <th style="width: 140px;">SKU</th>
+                            <th style="width: 160px;">Category</th>
+                            <th style="width: 100px;">Unit</th>
+                            <th style="width: 120px;">Price</th>
+                            <th style="width: 110px;">Stock</th>
+                            <th style="width: 110px;">Status</th>
+                            <th style="width: 130px;">Created</th>
+                            <th class="text-end" style="width: 160px;">Actions</th>
+                        </tr>
                     </thead>
                     <tbody id="productsTableBody">
-                    <!-- Static demo data (design only) -->
-
+                        <!-- Static demo data (design only) -->
 
                     </tbody>
                 </table>
@@ -44,22 +43,26 @@
 
     @push('scripts')
         <script>
-
             getProducts();
             loadProductCategories();
 
             async function loadProductCategories() {
-                let URL = '{{ url("/api/v1/categories") }}';
+                let URL = '{{ url('/api/v1/categories') }}';
                 let token = localStorage.getItem('token');
                 try {
-                    let response = await axios.get(URL, { headers: { Authorization: 'Bearer ' + token } });
+                    let response = await axios.get(URL, {
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        }
+                    });
                     let categories = response.data['data'] || [];
                     let createSelect = document.getElementById('productCategoryId');
                     let editSelect = document.getElementById('productEditCategoryId');
                     if (createSelect) {
                         createSelect.innerHTML = '<option value="" selected disabled>Select category</option>';
                         categories.forEach((c) => {
-                            createSelect.innerHTML += '<option value="' + c.id + '">' + (c.name || '') + '</option>';
+                            createSelect.innerHTML += '<option value="' + c.id + '">' + (c.name || '') +
+                            '</option>';
                         });
                     }
                     if (editSelect) {
@@ -74,25 +77,33 @@
             }
 
             async function getProducts() {
-                let URL = '{{ url("/api/v1/products") }}';
+                let URL = '{{ url('/api/v1/products') }}';
                 let token = localStorage.getItem('token');
                 let tbody = document.getElementById('productsTableBody');
                 try {
-                    let response = await axios.get(URL, { headers: { Authorization: 'Bearer ' + token } });
+                    let response = await axios.get(URL, {
+                        headers: {
+                            Authorization: 'Bearer ' + token
+                        }
+                    });
                     let products = response.data['data'] || [];
                     tbody.innerHTML = '';
                     products.forEach((item) => {
                         let created = item['created_at'] ? item['created_at'].substring(0, 10) : '-';
-                        let statusBadge = item['status'] ? '<span class="badge text-bg-success">Active</span>' : '<span class="badge text-bg-secondary">Inactive</span>';
-                        let categoryName = item['category'] && item['category']['name'] ? item['category']['name'] : '-';
+                        let statusBadge = item['status'] ? '<span class="badge text-bg-success">Active</span>' :
+                            '<span class="badge text-bg-secondary">Inactive</span>';
+                        let categoryName = item['category'] && item['category']['name'] ? item['category']['name'] :
+                            '-';
                         let price = item['price'] != null ? parseFloat(item['price']).toFixed(2) : '0.00';
                         let stock = item['stock_qty'] != null ? item['stock_qty'] : 0;
-                        let stockBadge = stock > 0 ? '<span class="badge text-bg-success">' + stock + '</span>' : '<span class="badge text-bg-secondary">' + stock + '</span>';
+                        let stockBadge = stock > 0 ? '<span class="badge text-bg-success">' + stock + '</span>' :
+                            '<span class="badge text-bg-secondary">' + stock + '</span>';
                         let subtext = [];
                         if (item['color']) subtext.push('Color: ' + item['color']);
                         if (item['size']) subtext.push('Size: ' + item['size']);
                         if (item['weight']) subtext.push('Weight: ' + item['weight'] + 'kg');
-                        let subtextHtml = subtext.length ? '<div class="text-muted small">' + subtext.join(' • ') + '</div>' : '';
+                        let subtextHtml = subtext.length ? '<div class="text-muted small">' + subtext.join(' • ') +
+                            '</div>' : '';
                         tbody.innerHTML += (`
                     <tr>
                         <td>${item['id']}</td>
@@ -114,8 +125,15 @@
                     </tr>
                 `);
                     });
+
+                    let table = new DataTable('#productsTable', {
+                        responsive: true,
+                        pageLength: 10,
+                        lengthMenu: [5, 10, 25, 50, 100],
+                    });
                 } catch (err) {
-                    tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted py-4">Failed to load products.</td></tr>';
+                    tbody.innerHTML =
+                        '<tr><td colspan="10" class="text-center text-muted py-4">Failed to load products.</td></tr>';
                     showErrorToast(getErrorMessage(err, 'Failed to load products.'));
                 }
             }

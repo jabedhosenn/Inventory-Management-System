@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'token.auth' => \App\Http\Middleware\TokenAuthentication::class,
+        ]);
+
+        // The api_token cookie is set by JavaScript, so it must not be encrypted/decrypted by Laravel
+        $middleware->encryptCookies(except: ['api_token']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

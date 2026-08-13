@@ -7,13 +7,13 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
             <span>Invoice List</span>
-            <a href="{{ route('pos') }}" class="btn btn-sm btn-primary">
+            <a href="{{route('pos')}}" class="btn btn-sm btn-primary">
                 <i class="bi bi-plus-lg me-1"></i> New Invoice (POS)
             </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table id="invoiceTable" class="table table-hover align-middle">
                     <thead class="table-light">
                     <tr>
                         <th style="width: 70px;">#</th>
@@ -28,7 +28,7 @@
                     </tr>
                     </thead>
                     <tbody id="invoicesTableBody">
-
+                    <!-- Static demo data (design only) -->
                     </tbody>
                 </table>
             </div>
@@ -138,6 +138,12 @@
                         <td>${statusBadge}</td>
                         <td class="text-end">${actionsHtml}</td>
                     </tr>`;
+                    });
+
+                    let table = new DataTable('#invoiceTable', {
+                        responsive: true,
+                        pageLength: 10,
+                        lengthMenu: [5, 10, 25, 50, 100],
                     });
                 } catch (err) {
                     tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">Failed to load invoices.</td></tr>';

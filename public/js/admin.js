@@ -66,6 +66,7 @@
         }finally {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
+            document.cookie = 'api_token=; path=/; max-age=0; SameSite=Lax'; // Clear the api_token cookie
             window.location.href = '/login';
         }
     }

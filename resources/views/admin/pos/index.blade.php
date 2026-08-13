@@ -159,8 +159,8 @@
                 let date = new Date();
                 let y = date.getFullYear();
                 let m = String(date.getMonth() + 1).padStart(2, '0');
-                let d = String(date.getDate()).padStart(2, '0');
-                return y + '-' + m + '-' + d;
+                let day = String(date.getDate()).padStart(2, '0');
+                return y + '-' + m + '-' + day;
             }
 
             function escapeHtml(text) {
@@ -172,7 +172,7 @@
             // ─── Load Categories ────────────────────────────────────────
            async function loadCategories(){
                 try{
-                    let response = await axios.get(categoriesUrl, authHeaders());
+                    let response = await axios.get(categoriesUrl,authHeaders());
                     allCategories = response.data['data'] || [];
                     let select = document.getElementById('categoryFilter');
                     select.innerHTML = '<option value="">All categories</option>';
@@ -293,7 +293,7 @@
                 if (cart.length === 0) {
                     document.getElementById('invoiceDiscountType').value = '';
                     document.getElementById('invoiceDiscountValue').value = '0';
-                    document.getElementById('itemDiscountDisplay').value = '0';
+                    // document.getElementById('itemDiscountDisplay').innerHTML = '0';
                 }
                 recalcCart();
                 renderCart();
@@ -331,7 +331,7 @@
                     let discountAmount = 0;
 
                     if (item.discount_type === 'fixed') {
-                        discountAmount = Math.min(item.discount_value, lineBeforeDiscount);
+                        discountAmount = Math.min(item.discount_value * item.quantity, lineBeforeDiscount);
                         // discountAmount = lineBeforeDiscount - item.discount_value;
                     } else if (item.discount_type === 'percent') {
                         discountAmount = lineBeforeDiscount * (item.discount_value / 100);
@@ -374,21 +374,13 @@
 
                 // Item discounts row
                 let itemDiscountRow = document.getElementById('itemDiscountRow');
-                if (itemDiscountsTotal > 0) {
-                    itemDiscountRow.style.display = 'flex';
-                    document.getElementById('itemDiscountDisplay').textContent = '- ' + formatMoney(itemDiscountsTotal);
-                } else {
-                    itemDiscountRow.style.display = 'none';
-                }
+                document.getElementById('itemDiscountDisplay').textContent = '- ' + formatMoney(itemDiscountsTotal);
+                itemDiscountRow.style.display = itemDiscountsTotal > 0 ? 'flex' : 'none';
 
                 // Invoice discount row
                 let invoiceDiscountRow = document.getElementById('invoiceDiscountRow');
-                if (invoiceDiscountAmount > 0) {
-                    invoiceDiscountRow.style.display = 'flex';
-                    document.getElementById('invoiceDiscountDisplay').textContent = '- ' + formatMoney(invoiceDiscountAmount);
-                } else {
-                    invoiceDiscountRow.style.display = 'none';
-                }
+                document.getElementById('invoiceDiscountDisplay').textContent = '- ' + formatMoney(invoiceDiscountAmount);
+                invoiceDiscountRow.style.display = invoiceDiscountAmount > 0 ? 'flex' : 'none';
 
                 // Cart badge & buttons
                 document.getElementById('cartBadge').textContent = cart.length + ' item' + (cart.length !== 1 ? 's' : '');
@@ -458,6 +450,11 @@
                 document.getElementById('invoiceDateInput').value = todayDate();
                 document.getElementById('invoiceDiscountType').value = '';
                 document.getElementById('invoiceDiscountValue').value = '0';
+
+                // Force hide item discount row when resetting
+                // document.getElementById('itemDiscountRow').style.display = 'none';
+                document.getElementById('itemDiscountDisplay').textContent = '- $ 0.00';
+
                 renderCart();
             }
 

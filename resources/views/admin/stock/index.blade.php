@@ -42,7 +42,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table id="stockTable" class="table table-hover align-middle">
                     <thead class="table-light">
                     <tr>
                         <th style="width: 70px;">#</th>
@@ -57,7 +57,16 @@
                     </thead>
                     <tbody id="stocksTableBody">
                     <!-- Static demo data (design only) -->
-                    
+                    <tr>
+                        <td>1</td>
+                        <td class="fw-semibold">iPhone 15 Pro</td>
+                        <td class="text-muted">Electronics</td>
+                        <td><span class="badge text-bg-success">IN</span></td>
+                        <td class="fw-semibold">+20</td>
+                        <td class="text-muted">New shipment received</td>
+                        <td class="text-muted">—</td>
+                        <td class="text-muted">2026-02-01</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -100,6 +109,12 @@
                         <td class="text-muted">${created}</td>
                     </tr>
                 `);
+                    });
+
+                    let table = new DataTable('#stockTable', {
+                        responsive: true,
+                        pageLength: 10,
+                        lengthMenu: [5, 10, 25, 50, 100],
                     });
                 } catch (err) {
                     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Failed to load stock movements.</td></tr>';

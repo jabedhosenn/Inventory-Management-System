@@ -12,7 +12,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table id="categoriesTable" class="table table-hover align-middle">
                 <thead class="table-light">
                 <tr>
                     <th style="width: 70px;">#</th>
@@ -68,6 +68,11 @@
                             </td>
                         </tr>
                         `);
+                    });
+                    let table = new DataTable('#categoriesTable', {
+                        responsive: true,
+                        pageLength: 10,
+                        lengthMenu: [5, 10, 25, 50, 100],
                     });
                 }catch (err){
                     tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Failed to load categories.</td></tr>';
