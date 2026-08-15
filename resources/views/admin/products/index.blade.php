@@ -126,11 +126,7 @@
                 `);
                     });
 
-                    let table = new DataTable('#productsTable', {
-                        responsive: true,
-                        pageLength: 10,
-                        lengthMenu: [5, 10, 25, 50, 100],
-                    });
+                    let table = new DataTable('#productsTable');
                 } catch (err) {
                     tbody.innerHTML =
                         '<tr><td colspan="10" class="text-center text-muted py-4">Failed to load products.</td></tr>';

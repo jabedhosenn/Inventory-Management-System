@@ -8,6 +8,10 @@
             <i class="bi bi-speedometer2"></i>
             <span>Dashboard</span>
         </a>
+        <a class="nav-link {{ request()->routeIs('customers') ? 'active':'' }}" href="{{ route('customers') }}">
+            <i class="bi bi-people"></i>
+            <span>Customers</span>
+        </a>
         <a class="nav-link {{ request()->routeIs('categories') ? 'active':'' }}" href="{{ route('categories') }}">
             <i class="bi bi-tags"></i>
             <span>Categories</span>

@@ -111,11 +111,7 @@
                 `);
                     });
 
-                    let table = new DataTable('#stockTable', {
-                        responsive: true,
-                        pageLength: 10,
-                        lengthMenu: [5, 10, 25, 50, 100],
-                    });
+                    let table = new DataTable('#stockTable');
                 } catch (err) {
                     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Failed to load stock movements.</td></tr>';
                     showErrorToast(getErrorMessage(err, 'Failed to load stock movements.'));

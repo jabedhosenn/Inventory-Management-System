@@ -140,11 +140,7 @@
                     </tr>`;
                     });
 
-                    let table = new DataTable('#invoiceTable', {
-                        responsive: true,
-                        pageLength: 10,
-                        lengthMenu: [5, 10, 25, 50, 100],
-                    });
+                    let table = new DataTable('#invoiceTable');
                 } catch (err) {
                     tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">Failed to load invoices.</td></tr>';
                     showErrorToast(getErrorMessage(err, 'Failed to load invoices.'));
