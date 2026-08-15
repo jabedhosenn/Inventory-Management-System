@@ -6,19 +6,25 @@
     <div class="row g-4">
         <!-- Left: Products -->
         <div class="col-lg-8">
-            <!-- Search -->
             <div class="card mb-3">
                 <div class="card-body py-3">
                     <div class="row g-2">
+                        <!-- Search -->
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search product by name or SKU..." id="searchInput">
+                                <input type="text" class="form-control" placeholder="Search product by name or SKU..."
+                                    id="searchInput">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <select class="form-select" id="categoryFilter">
-                                <option value="">All categories</option>
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="customerFilter">
+                                <option value="">Select Customer</option>
                             </select>
                         </div>
                     </div>
@@ -47,6 +53,29 @@
                     <span><i class="bi bi-cart3 me-2"></i>Cart</span>
                     <span class="badge bg-white text-primary" id="cartBadge">0 items</span>
                 </div>
+
+                {{-- Selected Customer --}}
+                <div id="selectedCustomerBox" class="border-bottom bg-light px-3 py-2 d-none">
+                    <div class="d-flex align-items-center justify-content-between">
+                        {{-- Customer Info --}}
+                        <div class="d-flex align-items-center gap-2">
+                            {{-- Name & Mobile --}}
+                            <div>
+                                <div class="">
+                                    Customer Name:
+                                    <span id="selectedCustomerName"></span>
+                                </div>
+
+                                <div class="">
+                                    <span>Mobile: </span>
+                                    <span id="selectedCustomerMobile"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Body -->
                 <div class="card-body p-0">
                     <!-- Cart Items -->
                     <div class="p-3" style="max-height: 320px; overflow-y: auto;" id="cartItemsContainer">
@@ -63,7 +92,8 @@
                         </div>
 
                         <!-- Item discounts total -->
-                        <div class="d-flex justify-content-between mb-2 text-danger" id="itemDiscountRow" style="display: none">
+                        <div class="d-flex justify-content-between mb-2 text-danger" id="itemDiscountRow"
+                            style="display: none">
                             <span>Item Discounts</span>
                             <span id="itemDiscountDisplay">- $ 0.00</span>
                         </div>
@@ -77,10 +107,12 @@
                                     <option value="fixed" selected>$</option>
                                     <option value="percent">%</option>
                                 </select>
-                                <input type="number" class="form-control form-control-sm" id="invoiceDiscountValue" style="width: 70px;" value="0" min="0">
+                                <input type="number" class="form-control form-control-sm" id="invoiceDiscountValue"
+                                    style="width: 70px;" value="0" min="0">
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mb-2 text-danger" id="invoiceDiscountRow" style="display: none">
+                        <div class="d-flex justify-content-between mb-2 text-danger" id="invoiceDiscountRow"
+                            style="display: none">
                             <span></span>
                             <span id="invoiceDiscountDisplay">- $ 0.00</span>
                         </div>
@@ -99,7 +131,8 @@
                         <div class="row g-2 mb-3">
                             <div class="col-6">
                                 <label class="form-label small text-muted mb-1">Invoice No</label>
-                                <input type="text" class="form-control form-control-sm"  id="invoiceNoInput" value="" readonly>
+                                <input type="text" class="form-control form-control-sm" id="invoiceNoInput"
+                                    value="" readonly>
                             </div>
                             <div class="col-6">
                                 <label class="form-label small text-muted mb-1">Date</label>
@@ -113,7 +146,8 @@
                             </button>
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <button type="button" class="btn btn-outline-primary w-100" id="saveDraftBtn" disabled>
+                                    <button type="button" class="btn btn-outline-primary w-100" id="saveDraftBtn"
+                                        disabled>
                                         <i class="bi bi-save me-1"></i>Save Draft
                                     </button>
                                 </div>
@@ -133,14 +167,17 @@
     @push('scripts')
         <script>
             // API URLS
-            let productsUrl  = '{{ url("/api/v1/products") }}';
-            let categoriesUrl = '{{ url("/api/v1/categories") }}';
-            let invoicesUrl  = '{{ url("/api/v1/invoices") }}';
+            let productsUrl = '{{ url('/api/v1/products') }}';
+            let categoriesUrl = '{{ url('/api/v1/categories') }}';
+            let customersUrl = '{{ url('/api/v1/customers') }}';
+            let invoicesUrl = '{{ url('/api/v1/invoices') }}';
 
             // Data holders or State
-            let allProducts  = [];
+            let allProducts = [];
             let allCategories = [];
+            let allCustomers = [];
             let cart = [];
+            let selectedCustomerId = null;
 
             // Helper functions
             function getToken() {
@@ -148,7 +185,11 @@
             }
 
             function authHeaders() {
-                return { headers: { Authorization: 'Bearer ' + getToken() } };
+                return {
+                    headers: {
+                        Authorization: 'Bearer ' + getToken()
+                    }
+                };
             }
 
             function formatMoney(amount) {
@@ -159,8 +200,8 @@
                 let date = new Date();
                 let y = date.getFullYear();
                 let m = String(date.getMonth() + 1).padStart(2, '0');
-                let day = String(date.getDate()).padStart(2, '0');
-                return y + '-' + m + '-' + day;
+                let d = String(date.getDate()).padStart(2, '0');
+                return y + '-' + m + '-' + d;
             }
 
             function escapeHtml(text) {
@@ -170,21 +211,76 @@
             }
 
             // ─── Load Categories ────────────────────────────────────────
-           async function loadCategories(){
-                try{
-                    let response = await axios.get(categoriesUrl,authHeaders());
+            async function loadCategories() {
+                try {
+                    let response = await axios.get(categoriesUrl, authHeaders());
                     allCategories = response.data['data'] || [];
                     let select = document.getElementById('categoryFilter');
-                    select.innerHTML = '<option value="">All categories</option>';
-                    allCategories.forEach(function (category){
-                        select.innerHTML += '<option value="'+ category.id + '">'+ escapeHtml(category.name) +'</option>';
+                    select.innerHTML = '<option value="">Select Category</option>';
+                    allCategories.forEach(function(category) {
+                        select.innerHTML += '<option value="' + category.id + '">' + escapeHtml(category.name) +
+                            '</option>';
                     });
-                }catch (err){
+                } catch (err) {
                     showErrorToast(getErrorMessage(err, 'Failed to load categories.'));
                 }
-           }
+            }
 
             loadCategories();
+
+            // ─── Load Customers ────────────────────────────────────────
+            async function loadCustomers() {
+                try {
+                    let response = await axios.get(customersUrl, authHeaders());
+                    allCustomers = response.data['data'] || [];
+                    let select = document.getElementById('customerFilter');
+                    select.innerHTML = '<option value="">Select Customer</option>';
+                    allCustomers.forEach(function(customer) {
+                        select.innerHTML += '<option value="' + customer.id + '">' + escapeHtml(customer.name) +
+                            ' (' + escapeHtml(customer.mobile) + ')' + '</option>';
+                    });
+                } catch (err) {
+                    showErrorToast(getErrorMessage(err, 'Failed to load customers.'));
+                }
+            }
+
+            loadCustomers();
+
+            document.getElementById('customerFilter').addEventListener('change', function() {
+
+                let customerId = this.value;
+
+                let customerBox = document.getElementById('selectedCustomerBox');
+                let customerName = document.getElementById('selectedCustomerName');
+                let customerMobile = document.getElementById('selectedCustomerMobile');
+
+                // No customer selected
+                if (!customerId) {
+                    customerBox.classList.add('d-none');
+
+                    customerName.textContent = '';
+                    customerMobile.textContent = '';
+
+                    return;
+                }
+
+                // Find selected customer
+                let customer = allCustomers.find(function(customer) {
+                    return String(customer.id) === String(customerId);
+                });
+
+                if (!customer) {
+                    return;
+                }
+
+                selectedCustomerId = customer.id;
+
+                // Display customer
+                customerName.textContent = customer.name;
+                customerMobile.textContent = customer.mobile;
+
+                customerBox.classList.remove('d-none');
+            });
 
             //Load products and render grid
             async function loadProducts() {
@@ -205,10 +301,10 @@
                 let grid = document.getElementById('productGrid');
 
                 // Filter products by search and category
-                let filtered = allProducts.filter(function (product) {
-                    let matchesSearch = !searchText
-                        || (product.product_name || '').toLowerCase().includes(searchText)
-                        || (product.sku || '').toLowerCase().includes(searchText);
+                let filtered = allProducts.filter(function(product) {
+                    let matchesSearch = !searchText ||
+                        (product.product_name || '').toLowerCase().includes(searchText) ||
+                        (product.sku || '').toLowerCase().includes(searchText);
                     let matchesCategory = !categoryId || String(product.category_id) === String(categoryId);
                     return matchesSearch && matchesCategory;
                 });
@@ -220,20 +316,23 @@
 
                 grid.innerHTML = '';
 
-                filtered.forEach(function (product) {
+                filtered.forEach(function(product) {
                     let stockQty = product.stock_qty != null ? parseInt(product.stock_qty) : 0;
                     let price = product.price != null ? parseFloat(product.price) : 0;
                     let isOutOfStock = stockQty <= 0;
                     let categoryName = product.category ? product.category.name : '';
-                    let stockBadgeClass = stockQty <= 0 ? 'text-bg-secondary' : (stockQty <= 5 ? 'text-bg-warning' : 'text-bg-success');
+                    let stockBadgeClass = stockQty <= 0 ? 'text-bg-secondary' : (stockQty <= 5 ? 'text-bg-warning' :
+                        'text-bg-success');
 
                     let col = document.createElement('div');
                     col.className = 'col-6 col-md-4 col-xl-3';
                     col.innerHTML =
-                        '<div class="card pos-product-card h-100' + (isOutOfStock ? ' out-of-stock' : '') + '" data-product-id="' + product.id + '">' +
+                        '<div class="card pos-product-card h-100' + (isOutOfStock ? ' out-of-stock' : '') +
+                        '" data-product-id="' + product.id + '">' +
                         '  <div class="product-image"><i class="bi bi-box"></i></div>' +
                         '  <div class="card-body p-2">' +
-                        '    <div class="fw-semibold small text-truncate" title="' + escapeHtml(product.product_name) + '">' + escapeHtml(product.product_name) + '</div>' +
+                        '    <div class="fw-semibold small text-truncate" title="' + escapeHtml(product.product_name) +
+                        '">' + escapeHtml(product.product_name) + '</div>' +
                         '    <div class="text-muted small">' + escapeHtml(product.sku) + '</div>' +
                         '    <div class="text-muted small">' + escapeHtml(categoryName) + '</div>' +
                         '    <div class="d-flex justify-content-between align-items-center mt-2">' +
@@ -244,7 +343,7 @@
                         '</div>';
 
                     if (!isOutOfStock) {
-                        col.querySelector('.pos-product-card').addEventListener('click', function () {
+                        col.querySelector('.pos-product-card').addEventListener('click', function() {
                             addToCart(product);
                         });
                     }
@@ -261,7 +360,9 @@
                 if (stockQty <= 0) return;
 
                 let unitPrice = product.price != null ? parseFloat(product.price) : 0;
-                let existingItem = cart.find(function (item) { return item.product_id === product.id; });
+                let existingItem = cart.find(function(item) {
+                    return item.product_id === product.id;
+                });
 
                 if (existingItem) {
                     if (existingItem.quantity >= stockQty) return;
@@ -287,7 +388,9 @@
 
             // ─── Cart: Remove ───────────────────────────────────────────
             function removeFromCart(productId) {
-                cart = cart.filter(function (item) { return item.product_id !== productId; });
+                cart = cart.filter(function(item) {
+                    return item.product_id !== productId;
+                });
 
                 // Reset invoice discount if cart becomes empty
                 if (cart.length === 0) {
@@ -301,11 +404,16 @@
 
             // ─── Cart: Change Quantity ───────────────────────────────────
             function changeQuantity(productId, delta) {
-                let item = cart.find(function (x) { return x.product_id === productId; });
+                let item = cart.find(function(x) {
+                    return x.product_id === productId;
+                });
                 if (!item) return;
 
                 let newQty = item.quantity + delta;
-                if (newQty < 1) { removeFromCart(productId); return; }
+                if (newQty < 1) {
+                    removeFromCart(productId);
+                    return;
+                }
                 if (newQty > item.max_stock) newQty = item.max_stock;
 
                 item.quantity = newQty;
@@ -315,7 +423,9 @@
 
             // ─── Cart: Update Item Discount ─────────────────────────────
             function updateItemDiscount(productId, discountType, discountValue) {
-                let item = cart.find(function (x) { return x.product_id === productId; });
+                let item = cart.find(function(x) {
+                    return x.product_id === productId;
+                });
                 if (!item) return;
 
                 item.discount_type = discountType || '';
@@ -326,7 +436,7 @@
 
             // ─── Recalculate Cart ───────────────────────────────────────
             function recalcCart() {
-                cart.forEach(function (item) {
+                cart.forEach(function(item) {
                     let lineBeforeDiscount = item.quantity * item.unit_price;
                     let discountAmount = 0;
 
@@ -345,19 +455,23 @@
             }
 
             function getSubtotal() {
-                return cart.reduce(function (sum, item) { return sum + item.line_total; }, 0);
+                return cart.reduce(function(sum, item) {
+                    return sum + item.line_total;
+                }, 0);
             }
 
             function getItemDiscountsTotal() {
-                return cart.reduce(function (sum, item) { return sum + item.discount_amount; }, 0);
+                return cart.reduce(function(sum, item) {
+                    return sum + item.discount_amount;
+                }, 0);
             }
 
             function getInvoiceDiscountAmount() {
-                let type  = document.getElementById('invoiceDiscountType').value;
+                let type = document.getElementById('invoiceDiscountType').value;
                 let value = parseFloat(document.getElementById('invoiceDiscountValue').value) || 0;
                 let subtotal = getSubtotal();
 
-                if (type === 'fixed')   return Math.min(value, subtotal);
+                if (type === 'fixed') return Math.min(value, subtotal);
                 if (type === 'percent') return Math.round(subtotal * value / 100 * 100) / 100;
                 return 0;
             }
@@ -401,7 +515,7 @@
 
                 let html = '';
 
-                cart.forEach(function (item) {
+                cart.forEach(function(item) {
                     let hasDiscount = item.discount_type && item.discount_value > 0;
 
                     html +=
@@ -410,30 +524,40 @@
                         '<div class="d-flex justify-content-between align-items-start mb-2">' +
                         '<div class="flex-grow-1 me-2">' +
                         '<div class="fw-semibold">' + escapeHtml(item.product_name) + '</div>' +
-                        '<div class="text-muted small">' + formatMoney(item.unit_price) + ' × ' + item.quantity + '</div>' +
+                        '<div class="text-muted small">' + formatMoney(item.unit_price) + ' × ' + item.quantity +
                         '</div>' +
-                        '<button type="button" class="btn btn-sm btn-outline-danger p-1 lh-1" onclick="removeFromCart(' + item.product_id + ')">' +
+                        '</div>' +
+                        '<button type="button" class="btn btn-sm btn-outline-danger p-1 lh-1" onclick="removeFromCart(' +
+                        item.product_id + ')">' +
                         '<i class="bi bi-x"></i>' +
                         '</button>' +
                         '</div>' +
                         // Quantity controls + line total
                         '<div class="d-flex align-items-center gap-2">' +
                         '<div class="input-group input-group-sm" style="width: 100px;">' +
-                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item.product_id + ', -1)">−</button>' +
-                        '<input type="number" class="form-control text-center px-1" value="' + item.quantity + '" min="1" max="' + item.max_stock + '" onchange="setQuantity(' + item.product_id + ', this.value)">' +
-                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item.product_id + ', 1)">+</button>' +
+                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item
+                        .product_id + ', -1)">−</button>' +
+                        '<input type="number" class="form-control text-center px-1" value="' + item.quantity +
+                        '" min="1" max="' + item.max_stock + '" onchange="setQuantity(' + item.product_id +
+                        ', this.value)">' +
+                        '<button class="btn btn-outline-secondary" type="button" onclick="changeQuantity(' + item
+                        .product_id + ', 1)">+</button>' +
                         '</div>' +
                         '<div class="flex-grow-1 text-end fw-semibold">' + formatMoney(item.line_total) + '</div>' +
                         '</div>' +
                         // Item discount
                         '<div class="d-flex align-items-center gap-2 bg-light rounded p-2 mt-2">' +
                         '<span class="small text-muted">Discount:</span>' +
-                        '<select class="form-select form-select-sm" style="width: 80px;" onchange="updateItemDiscount(' + item.product_id + ', this.value, this.parentElement.querySelector(\'input\').value)">' +
+                        '<select class="form-select form-select-sm" style="width: 80px;" onchange="updateItemDiscount(' +
+                        item.product_id + ', this.value, this.parentElement.querySelector(\'input\').value)">' +
                         '<option value="">None</option>' +
                         '<option value="fixed"' + (item.discount_type === 'fixed' ? ' selected' : '') + '>$</option>' +
-                        '<option value="percent"' + (item.discount_type === 'percent' ? ' selected' : '') + '>%</option>' +
+                        '<option value="percent"' + (item.discount_type === 'percent' ? ' selected' : '') +
+                        '>%</option>' +
                         '</select>' +
-                        '<input type="number" class="form-control form-control-sm" style="width: 60px;" value="' + item.discount_value + '" min="0" step="0.01" oninput="updateItemDiscount(' + item.product_id + ', this.parentElement.querySelector(\'select\').value, this.value)">' +
+                        '<input type="number" class="form-control form-control-sm" style="width: 60px;" value="' + item
+                        .discount_value + '" min="0" step="0.01" oninput="updateItemDiscount(' + item.product_id +
+                        ', this.parentElement.querySelector(\'select\').value, this.value)">' +
                         '<span class="small text-danger">-' + formatMoney(item.discount_amount) + '</span>' +
                         '</div>' +
                         '</div>';
@@ -451,6 +575,12 @@
                 document.getElementById('invoiceDiscountType').value = '';
                 document.getElementById('invoiceDiscountValue').value = '0';
 
+                // Reset customer
+                document.getElementById('customerFilter').value = '';
+                document.getElementById('selectedCustomerBox').classList.add('d-none');
+                document.getElementById('selectedCustomerName').textContent = '';
+                document.getElementById('selectedCustomerMobile').textContent = '';
+
                 // Force hide item discount row when resetting
                 // document.getElementById('itemDiscountRow').style.display = 'none';
                 document.getElementById('itemDiscountDisplay').textContent = '- $ 0.00';
@@ -467,8 +597,9 @@
                 let grandTotal = Math.round((subtotal - discountAmount) * 100) / 100;
                 let invoiceDate = document.getElementById('invoiceDateInput').value;
                 let invoiceNo = document.getElementById('invoiceNoInput').value || null;
+                let customerId = document.getElementById('customerFilter').value;
 
-                let items = cart.map(function (item) {
+                let items = cart.map(function(item) {
                     return {
                         product_id: item.product_id,
                         quantity: item.quantity,
@@ -483,6 +614,7 @@
                 return {
                     invoice_no: invoiceNo,
                     invoice_date: invoiceDate,
+                    customer_id: selectedCustomerId,
                     items: items,
                     subtotal: Math.round(subtotal * 100) / 100,
                     discount_type: discountType || null,
@@ -500,6 +632,13 @@
                     return;
                 }
 
+                let customerId = document.getElementById('customerFilter').value;
+
+                if (!selectedCustomerId) {
+                    showErrorToast('Please select a customer.');
+                    return;
+                }
+
                 let payload = buildInvoicePayload(status);
 
                 if (!payload.invoice_date) {
@@ -507,7 +646,8 @@
                     return;
                 }
 
-                let btn = (status === 'finalized') ? document.getElementById('finalizeBtn') : document.getElementById('saveDraftBtn');
+                let btn = (status === 'finalized') ? document.getElementById('finalizeBtn') : document.getElementById(
+                    'saveDraftBtn');
                 let originalHtml = btn.innerHTML;
                 btn.disabled = true;
                 btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Saving...';
@@ -532,15 +672,25 @@
             // ─── Event Listeners ────────────────────────────────────────
             document.getElementById('searchInput').addEventListener('input', renderProducts);
             document.getElementById('categoryFilter').addEventListener('change', renderProducts);
-            document.getElementById('invoiceDiscountType').addEventListener('change', function () { recalcCart(); renderCart(); });
-            document.getElementById('invoiceDiscountValue').addEventListener('input', function () { recalcCart(); renderCart(); });
-            document.getElementById('clearCartBtn').addEventListener('click', function () {
+            document.getElementById('invoiceDiscountType').addEventListener('change', function() {
+                recalcCart();
+                renderCart();
+            });
+            document.getElementById('invoiceDiscountValue').addEventListener('input', function() {
+                recalcCart();
+                renderCart();
+            });
+            document.getElementById('clearCartBtn').addEventListener('click', function() {
                 resetCart();
                 showSuccessToast('Cart cleared.');
             });
 
-            document.getElementById('finalizeBtn').addEventListener('click', function () { submitInvoice('finalized'); });
-            document.getElementById('saveDraftBtn').addEventListener('click', function () { submitInvoice('draft'); });
+            document.getElementById('finalizeBtn').addEventListener('click', function() {
+                submitInvoice('finalized');
+            });
+            document.getElementById('saveDraftBtn').addEventListener('click', function() {
+                submitInvoice('draft');
+            });
         </script>
     @endpush
 @endsection

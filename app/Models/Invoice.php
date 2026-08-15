@@ -11,6 +11,7 @@ class Invoice extends Model
     protected $fillable = [
         'invoice_no',
         'invoice_date',
+        'customer_id',
         'subtotal',
         'discount_type',
         'discount_value',
@@ -35,5 +36,10 @@ class Invoice extends Model
     public function stockMovements()
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

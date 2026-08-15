@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('invoice_no')->unique();
             $table->date('invoice_date');
+            $table->foreignId('customer_id')
+            ->constrained('customers')
+            ->cascadeOnDelete();
             $table->decimal('subtotal', 12, 2)->default(0);
             $table->enum('discount_type', ['fixed', 'percent'])->nullable();
             $table->decimal('discount_value', 12, 2)->default(0);

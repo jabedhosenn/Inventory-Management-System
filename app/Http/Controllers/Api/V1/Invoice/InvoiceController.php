@@ -17,7 +17,7 @@ class InvoiceController extends Controller
     public function index()
     {
         try {
-            $invoices = Invoice::with(['items.product.category'])
+            $invoices = Invoice::with(['customer', 'items.product.category'])
                 ->orderByDesc('id')
                 ->get();
 
@@ -40,6 +40,7 @@ class InvoiceController extends Controller
             $validated = $request->validate([
                 'invoice_no' => ['nullable', 'string', 'max:255', 'unique:invoices,invoice_no'],
                 'invoice_date' => ['required', 'date'],
+                'customer_id' => ['required', 'exists:customers,id'],
                 'items' => ['required', 'array', 'min:1'],
                 'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
                 'items.*.quantity' => ['required', 'integer', 'min:1'],
@@ -66,6 +67,7 @@ class InvoiceController extends Controller
             $invoice = Invoice::create([
                 'invoice_no' => $validated['invoice_no'],
                 'invoice_date' => $validated['invoice_date'],
+                'customer_id' => $validated['customer_id'],
                 'subtotal' => $validated['subtotal'],
                 'discount_type' => $validated['discount_type'] ?? null,
                 'discount_value' => $validated['discount_value'],
@@ -163,6 +165,7 @@ class InvoiceController extends Controller
             $validated = $request->validate([
                 'invoice_no' => ['sometimes', 'required', 'string', 'max:255', 'unique:invoices,invoice_no,' . $invoice->id],
                 'invoice_date' => ['sometimes', 'required', 'date'],
+                'customer_id' => ['required', 'exists:customers,id'],
                 'items' => ['sometimes', 'required', 'array', 'min:1'],
                 'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
                 'items.*.quantity' => ['required', 'integer', 'min:1'],
@@ -192,6 +195,7 @@ class InvoiceController extends Controller
                     InvoiceItem::create([
                         'invoice_id' => $invoice->id,
                         'product_id' => $itemData['product_id'],
+                        'customer_id'=> $itemData['customer_id'],
                         'quantity' => $itemData['quantity'],
                         'unit_price' => $itemData['unit_price'],
                         'discount_type' => $itemData['discount_type'] ?? null,

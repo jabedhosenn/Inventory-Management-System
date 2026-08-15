@@ -21,7 +21,7 @@
 
 @push('scripts')
     <script>
-        function viewInvoice(id){
+        function viewInvoice(id) {
             let invoice = invoicesData.find(inv => inv.id === id);
             let body = document.getElementById('invoiceShowBody');
 
@@ -44,12 +44,18 @@
             }
 
             let invoiceDate = invoice.invoice_date ? invoice.invoice_date.substring(0, 10) : '-';
+            // Customer information
+            // Customer information
+            let customerName = invoice.customer ? invoice.customer.name : '';
+            let customerMobile = invoice.customer ? invoice.customer.mobile : '';
+
             let items = invoice.items || [];
             let itemsRows = '';
 
             items.forEach((itm, idx) => {
                 let productName = itm.product && itm.product.product_name ? itm.product.product_name : '-';
-                let categoryName = itm.product && itm.product.category && itm.product.category.name ? itm.product.category.name : '-';
+                let categoryName = itm.product && itm.product.category && itm.product.category.name ? itm.product
+                    .category.name : '-';
                 let qty = itm.quantity || 0;
                 let unitPrice = parseFloat(itm.unit_price || 0).toFixed(2);
                 let itemDiscount = parseFloat(itm.discount_amount || 0);
@@ -63,7 +69,8 @@
                     } else if (itm.discount_type === 'fixed') {
                         label = ' (Fixed)';
                     }
-                    itemDiscountHtml = '<span class="text-danger">- $ ' + itemDiscount.toFixed(2) + '</span><span class="text-muted small">' + label + '</span>';
+                    itemDiscountHtml = '<span class="text-danger">- $ ' + itemDiscount.toFixed(2) +
+                        '</span><span class="text-muted small">' + label + '</span>';
                 }
 
                 itemsRows += `
@@ -96,19 +103,41 @@
                 } else if (invoice.discount_type === 'fixed') {
                     label = ' (Fixed)';
                 }
-                invoiceDiscountHtml = '- $ ' + discountAmount.toFixed(2) + '<span class="text-muted small">' + label + '</span>';
+                invoiceDiscountHtml = '- $ ' + discountAmount.toFixed(2) + '<span class="text-muted small">' + label +
+                    '</span>';
             }
 
             body.innerHTML = `
             <div id="invoicePrintArea">
+                <div class="d-flex justify-content-center align-items-center">
+                <h3 class="mb-0">Inventory Hub</h3>
+                </div>
+                    <hr>
                 <div class="d-flex justify-content-between align-items-start mb-4">
+
+                    {{-- Invoice Info --}}
                     <div>
                         <h4 class="mb-1">${invoice.invoice_no || ''}</h4>
-                        <div class="text-muted">Date: ${invoiceDate}</div>
+                        <div class="text-muted">
+                            Date: ${invoiceDate}
+                        </div>
                     </div>
+                    {{-- Customer Info --}}
+                    <div>
+                        <div class="fw-semibold">
+                            Customer Name: ${customerName || ''}
+                        </div>
+
+                        <div class="text-muted small mt-1">
+                            Mobile: ${customerMobile || '-'}
+                        </div>
+                    </div>
+
+                    {{-- Status --}}
                     <div class="text-end">
                         ${statusBadge}
                     </div>
+
                 </div>
 
                 <hr>
@@ -164,9 +193,9 @@
         //     w.print();
         // }
 
-        function printInvoice(){
+        function printInvoice() {
             let printArea = document.getElementById('invoicePrintArea');
-            if(!printArea) return;
+            if (!printArea) return;
 
             let printWindow = window.open('', '_blank', 'width=800,height=600');
             printWindow.document.write(`
@@ -185,10 +214,10 @@
                 </style>
             </head>
             <body>
-                <h1 class="text-center mb-4">ST Telecom</h1>
                 ${printArea.innerHTML}
                 <hr>
-                <p class="text-center text-muted mt-4">Thank you. Come again!</p>
+                <h4 class="text-center text-muted mt-4">Thank you. Come again!</h4>
+                <h5 class="text-center text-muted">Jabed Hosen</h5>
 
                 <script>
                     window.onload = function() {
