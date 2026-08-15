@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Category\CategoryController;
+use App\Http\Controllers\Api\V1\Customer\CustomerController;
 use App\Http\Controllers\Api\V1\Dashboard\DashboardController;
 use App\Http\Controllers\Api\V1\Invoice\InvoiceController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
@@ -49,5 +50,12 @@ Route::prefix('v1')->group(function(){
         Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
         Route::put('/invoices/{id}', [InvoiceController::class, 'update'])->name('invoices.update');
         Route::delete('/invoices/{id}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
+
+        // Customer Routes
+        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+        Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
     });
 });
