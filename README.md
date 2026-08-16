@@ -147,6 +147,15 @@ The development strategy explicitly prioritizes backend/API development before t
 
 ---
 
+## 📄 Project Documentation
+
+The complete project documentation, including the project requirements, development strategy, and related details, is available below:
+
+**Project Documentation:**  
+[View Documentation on Google Drive](https://drive.google.com/file/d/1cHYIS_Iv-WbLN86fXM9UWwbxY4XkLKjc/view?usp=sharing)
+
+---
+
 ## Technology Stack
 
 | Technology | Purpose |
